@@ -1,0 +1,20 @@
+{
+  "site": {
+    "title": "我的偶像 · 行程表",
+    "idol": "Official Fan Schedule"
+  },
+  "schedule": [
+    {
+      "id": "demo1",
+      "title": "（示例）粉丝见面会",
+      "date": "2026-11-20",
+      "time": "19:00",
+      "endTime": "21:00",
+      "location": "Marina Bay Sands, Singapore",
+      "category": "见面会",
+      "details": "这是一条示例行程，请在管理员后台删除后添加你自己的行程。",
+      "link": ""
+    }
+  ],
+  "highlights": []
+}
