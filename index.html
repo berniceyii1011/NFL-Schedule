@@ -15,7 +15,28 @@
   --line:#303238
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:#ffffff;font:15px/1.6 system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+  
+body{
+  margin:0;
+  background:var(--bg);
+  color:#ffffff;
+  font:15px/1.6 system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  position:relative;
+  isolation:isolate;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  background-image:url("images/Image_20261104181027_123_1.jpg");
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  opacity:0.28;
+  pointer-events:none;
+}
 [hidden]{display:none!important}
 header{padding:44px 16px 28px;text-align:center;background:linear-gradient(135deg,#173b8f,#0b0b0d);border-bottom:1px solid var(--line)}
 header h1{margin:0;font-size:28px;color:#ffffff}
