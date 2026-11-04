@@ -59,7 +59,7 @@ h2{font-size:20px;margin:28px 0 12px;color:#ffffff}
 .btn:hover{background:#254fa8}
 .badge{background:var(--ac);color:#ffffff;font-size:12px;padding:1px 8px;border-radius:10px;margin-left:6px}
 .badge.b2{background:#254fa8}
-.poster{display:block;margin-top:10px;max-width:100%;max-height:520px;width:auto;height:auto;border-radius:8px;border:1px solid var(--line);cursor:zoom-in}
+.poster{width:96px;height:128px;object-fit:cover;border-radius:8px;border:1px solid var(--line);cursor:zoom-in;flex-shrink:0;align-self:flex-start;background:#000}
 .poster:hover{border-color:#526b9e}
 .empty{color:#ffffff;opacity:.75;text-align:center;padding:30px 0}
 
@@ -73,6 +73,7 @@ h2{font-size:20px;margin:28px 0 12px;color:#ffffff}
 @media(max-width:520px){
   .item{flex-direction:column;gap:4px}
   header h1{font-size:23px}
+  .poster{width:100%;height:auto;max-height:420px;object-fit:contain}
 }
 </style>
 </head>
@@ -146,7 +147,7 @@ function card(x){
   const art=(x.artists&&x.artists.length)?`<div class="artists">${x.artists.map(n=>`<span class="artist">🎤 ${esc(n)}</span>`).join('')}</div>`:'';
   const ps=mediaSrc(x.image);
   const poster=ps?`<img class="poster" loading="lazy" src="${esc(ps)}" alt="${esc(x.title)} 海报">`:'';
-  return `<div class="item"><div class="time">${time}</div><div class="body"><h4>${esc(x.title)}${chip}</h4>${art}${loc}${det}${btn}${poster}</div></div>`;
+  return `<div class="item"><div class="time">${time}</div><div class="body"><h4>${esc(x.title)}${chip}</h4>${art}${loc}${det}${btn}</div>${poster}</div>`;
 }
 function renderList(){
   const t=today();
