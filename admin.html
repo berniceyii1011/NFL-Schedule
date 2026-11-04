@@ -9,10 +9,10 @@
 :root{
   --bg:#0b0b0d;
   --card:#191a1e;
-  --tx:#f2f2f4;
-  --mut:#b7b9c0;
+  --tx:#ffffff;
+  --mut:#ffffff;
   --ac:#173b8f;
-  --ac2:#e2b92e;
+  --ac2:#173b8f;
   --line:#303238
 }
 
@@ -21,7 +21,7 @@
 body{
   margin:0;
   background:var(--bg);
-  color:var(--tx);
+  color:#ffffff;
   font:15px/1.6 system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif
 }
 
@@ -47,11 +47,12 @@ body{
 .box h1{
   margin:0 0 4px;
   font-size:22px;
-  text-align:center
+  text-align:center;
+  color:#ffffff
 }
 
 .box .sub{
-  color:var(--mut);
+  color:#ffffff;
   text-align:center;
   margin:0 0 18px;
   font-size:14px
@@ -60,7 +61,7 @@ body{
 label{
   display:block;
   font-size:13px;
-  color:var(--mut);
+  color:#ffffff;
   margin:12px 0 4px
 }
 
@@ -86,17 +87,17 @@ button{
   border-radius:9px;
   padding:9px 18px;
   background:var(--ac);
-  color:#fff
+  color:#ffffff
 }
 
 button.sec{
   background:#292b31;
-  color:#f2f2f4
+  color:#ffffff
 }
 
 button.danger{
-  background:#e2b92e;
-  color:#171717
+  background:#173b8f;
+  color:#ffffff
 }
 
 button.sm{
@@ -110,13 +111,18 @@ button:disabled{
 }
 
 button:hover:not(:disabled){
-  background:#e2b92e;
-  color:#171717
+  background:#254fa8;
+  color:#ffffff
 }
 
 button.sec:hover:not(:disabled){
   background:#173b8f;
-  color:#fff
+  color:#ffffff
+}
+
+button.danger:hover:not(:disabled){
+  background:#254fa8;
+  color:#ffffff
 }
 
 input:hover,select:hover,textarea:hover{
@@ -125,8 +131,8 @@ input:hover,select:hover,textarea:hover{
 
 input:focus,select:focus,textarea:focus{
   outline:none;
-  border-color:#e2b92e;
-  box-shadow:0 0 0 2px rgba(226,185,46,.16)
+  border-color:#526b9e;
+  box-shadow:0 0 0 2px rgba(82,107,158,.16)
 }
 
 select option{
@@ -145,7 +151,7 @@ select option:checked{
 }
 
 .err{
-  color:#ff7777;
+  color:#ffffff;
   font-size:13px;
   min-height:18px;
   margin-top:8px;
@@ -154,13 +160,13 @@ select option:checked{
 
 .hint{
   font-size:12px;
-  color:var(--mut);
+  color:#ffffff;
   margin-top:4px
 }
 
 .link{
   background:none;
-  color:var(--mut);
+  color:#ffffff;
   text-decoration:underline;
   padding:0;
   font-size:12px;
@@ -180,12 +186,14 @@ select option:checked{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:6px
+  margin-bottom:6px;
+  color:#ffffff
 }
 
 .top h1{
   font-size:20px;
-  margin:0
+  margin:0;
+  color:#ffffff
 }
 
 section{
@@ -193,12 +201,14 @@ section{
   border:1px solid var(--line);
   border-radius:14px;
   padding:18px;
-  margin-top:18px
+  margin-top:18px;
+  color:#ffffff
 }
 
 section h2{
   margin:0 0 6px;
-  font-size:17px
+  font-size:17px;
+  color:#ffffff
 }
 
 .grid{
@@ -216,20 +226,23 @@ section h2{
   gap:10px;
   align-items:flex-start;
   padding:10px 0;
-  border-top:1px solid var(--line)
+  border-top:1px solid var(--line);
+  color:#ffffff
 }
 
 .row .info{
   flex:1;
-  min-width:0
+  min-width:0;
+  color:#ffffff
 }
 
 .row .info b{
-  display:block
+  display:block;
+  color:#ffffff
 }
 
 .row .info span{
-  color:var(--mut);
+  color:#ffffff;
   font-size:13px;
   word-break:break-all
 }
@@ -263,17 +276,19 @@ section h2{
   border-radius:10px;
   z-index:9;
   max-width:90vw;
-  display:none
+  display:none;
+  color:#ffffff
 }
 
 #toast.bad{
   background:#5a1f2b;
-  border-color:#8b3545
+  border-color:#8b3545;
+  color:#ffffff
 }
 
 .tip{
   font-size:13px;
-  color:var(--mut);
+  color:#ffffff;
   margin:0 0 4px
 }
 
