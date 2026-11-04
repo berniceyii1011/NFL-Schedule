@@ -14,6 +14,17 @@
       "category": "见面会",
       "details": "这是一条示例行程，请在管理员后台删除后添加你自己的行程。",
       "link": ""
+    },
+    {
+      "id": "s1793778733605",
+      "title": "shask",
+      "date": "2026-11-26",
+      "time": "15:57",
+      "endTime": "15:55",
+      "location": "dsad",
+      "category": "拍摄",
+      "details": "dsad",
+      "link": ""
     }
   ],
   "highlights": []
