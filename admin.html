@@ -257,7 +257,7 @@ section h2{
   width:72px;
   height:44px;
   border-radius:6px;
-  background:#000 center/cover;
+  background:#000 center/contain no-repeat;
   flex-shrink:0;
   display:flex;
   align-items:center;
@@ -350,6 +350,9 @@ section h2{
     <h2 id="fTitle">添加行程</h2>
     <div class="grid">
       <div class="span"><label>标题 *</label><input id="xTitle" placeholder="例如：XXX 首尔演唱会 Day 1"></div>
+      <div class="span"><label>参与艺人（可单选或多选）</label>
+        <div id="xArtists" style="display:flex;gap:18px;flex-wrap:wrap;margin-top:4px"><label style="display:flex;align-items:center;gap:6px;margin:0;font-size:14px;cursor:pointer"><input type="checkbox" value="Namtan Tipnaree" style="width:auto"> Namtan Tipnaree</label><label style="display:flex;align-items:center;gap:6px;margin:0;font-size:14px;cursor:pointer"><input type="checkbox" value="Film Rachanun" style="width:auto"> Film Rachanun</label><label style="display:flex;align-items:center;gap:6px;margin:0;font-size:14px;cursor:pointer"><input type="checkbox" value="Lunar" style="width:auto"> Lunar</label></div>
+      </div>
       <div><label>日期 *</label><input type="date" id="xDate"></div>
       <div><label>类型</label><input id="xCat" list="cats" placeholder="演唱会 / 综艺 / 见面会…"><datalist id="cats"><option>演唱会</option><option>综艺</option><option>见面会</option><option>拍摄</option><option>直播</option><option>颁奖典礼</option><option>机场</option><option>其他</option></datalist></div>
       <div><label>开始时间</label><input type="time" id="xTime"></div>
@@ -548,7 +551,7 @@ function render(){
   $('#xCount').textContent=`(${list.length})`;
   $('#xList').innerHTML=list.length?list.map(x=>`
     <div class="row">${x.image?`<div class="thumb" style="background-image:url('${esc(encodeURI(x.image))}')"></div>`:''}<div class="info"><b>${esc(x.title)}${x.category?' · '+esc(x.category):''}</b>
-    <span>${esc(x.date)} ${esc(x.time||'全天')}${x.endTime?'–'+esc(x.endTime):''}${x.location?' ｜ '+esc(x.location):''}</span></div>
+    <span>${esc(x.date)} ${esc(x.time||'全天')}${x.endTime?'–'+esc(x.endTime):''}${x.location?' ｜ '+esc(x.location):''}${(x.artists&&x.artists.length)?' ｜ 🎤 '+esc(x.artists.join(' / ')):''}</span></div>
     <div class="btns"><button class="sec sm" data-edit="${esc(x.id)}">编辑</button><button class="danger sm" data-del="${esc(x.id)}">删除</button></div></div>`).join(''):'<p class="tip">还没有行程</p>';
   const hs=DATA.highlights;
   $('#hCount').textContent=`(${hs.length})`;
@@ -570,6 +573,7 @@ function resetForm(){
   editingId=null;
   ['xTitle','xDate','xCat','xTime','xEnd','xLoc','xDet','xLink'].forEach(i=>$('#'+i).value='');
   $('#xImg').value='';$('#xImgDel').checked=false;$('#xImgCur').hidden=true;
+  document.querySelectorAll('#xArtists input').forEach(c=>c.checked=false);
   $('#fTitle').textContent='添加行程';$('#xSave').textContent='添加行程';$('#xCancel').hidden=true;
 }
 $('#xCancel').onclick=resetForm;
@@ -579,7 +583,8 @@ $('#xSave').onclick=()=>{
   const link=$('#xLink').value.trim();
   if(link&&!/^https?:\/\//i.test(link)){toast('链接必须以 http:// 或 https:// 开头',true);return;}
   const item={id:editingId||('s'+Date.now()),title,date,time:$('#xTime').value,endTime:$('#xEnd').value,
-    location:$('#xLoc').value.trim(),category:$('#xCat').value.trim(),details:$('#xDet').value.trim(),link};
+    location:$('#xLoc').value.trim(),category:$('#xCat').value.trim(),details:$('#xDet').value.trim(),link,
+    artists:[...document.querySelectorAll('#xArtists input:checked')].map(c=>c.value)};
   const isEdit=!!editingId;
   const old=isEdit?DATA.schedule.find(x=>x.id===editingId):null;
   const oldImg=(old&&old.image)||'';
@@ -603,6 +608,7 @@ $('#xList').onclick=e=>{
     $('#xTitle').value=x.title;$('#xDate').value=x.date;$('#xCat').value=x.category||'';
     $('#xTime').value=x.time||'';$('#xEnd').value=x.endTime||'';$('#xLoc').value=x.location||'';
     $('#xDet').value=x.details||'';$('#xLink').value=x.link||'';
+    document.querySelectorAll('#xArtists input').forEach(c=>c.checked=(x.artists||[]).includes(c.value));
     $('#xImg').value='';$('#xImgDel').checked=false;
     if(x.image){$('#xImgThumb').style.backgroundImage="url('"+encodeURI(x.image)+"')";$('#xImgCur').hidden=false;}
     else $('#xImgCur').hidden=true;
