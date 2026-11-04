@@ -297,7 +297,6 @@ section h2{
     grid-template-columns:1fr
   }
 }
-
 </style>
 </head>
 <body>
@@ -358,6 +357,11 @@ section h2{
       <div class="span"><label>地点</label><input id="xLoc" placeholder="例如：KSPO Dome, Seoul"></div>
       <div class="span"><label>详情</label><textarea id="xDet" placeholder="入场时间、注意事项、票务信息等"></textarea></div>
       <div class="span"><label>相关链接（可选）</label><input id="xLink" placeholder="https://…"></div>
+      <div class="span"><label>活动海报（可选）</label>
+        <input type="file" id="xImg" accept="image/*">
+        <div class="hint">图片会自动压缩到最长边 1600px，访客页点击海报可看大图。</div>
+        <div id="xImgCur" hidden style="margin-top:8px;display:flex;align-items:center;gap:10px"><div class="thumb" id="xImgThumb"></div><label style="margin:0"><input type="checkbox" id="xImgDel" style="width:auto"> 移除当前海报</label></div>
+      </div>
     </div>
     <div style="margin-top:14px;display:flex;gap:8px">
       <button id="xSave">添加行程</button>
@@ -543,7 +547,7 @@ function render(){
   const list=[...DATA.schedule].sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
   $('#xCount').textContent=`(${list.length})`;
   $('#xList').innerHTML=list.length?list.map(x=>`
-    <div class="row"><div class="info"><b>${esc(x.title)}${x.category?' · '+esc(x.category):''}</b>
+    <div class="row">${x.image?`<div class="thumb" style="background-image:url('${esc(encodeURI(x.image))}')"></div>`:''}<div class="info"><b>${esc(x.title)}${x.category?' · '+esc(x.category):''}</b>
     <span>${esc(x.date)} ${esc(x.time||'全天')}${x.endTime?'–'+esc(x.endTime):''}${x.location?' ｜ '+esc(x.location):''}</span></div>
     <div class="btns"><button class="sec sm" data-edit="${esc(x.id)}">编辑</button><button class="danger sm" data-del="${esc(x.id)}">删除</button></div></div>`).join(''):'<p class="tip">还没有行程</p>';
   const hs=DATA.highlights;
@@ -565,6 +569,7 @@ $('#sSave').onclick=()=>{
 function resetForm(){
   editingId=null;
   ['xTitle','xDate','xCat','xTime','xEnd','xLoc','xDet','xLink'].forEach(i=>$('#'+i).value='');
+  $('#xImg').value='';$('#xImgDel').checked=false;$('#xImgCur').hidden=true;
   $('#fTitle').textContent='添加行程';$('#xSave').textContent='添加行程';$('#xCancel').hidden=true;
 }
 $('#xCancel').onclick=resetForm;
@@ -576,10 +581,19 @@ $('#xSave').onclick=()=>{
   const item={id:editingId||('s'+Date.now()),title,date,time:$('#xTime').value,endTime:$('#xEnd').value,
     location:$('#xLoc').value.trim(),category:$('#xCat').value.trim(),details:$('#xDet').value.trim(),link};
   const isEdit=!!editingId;
-  if(isEdit){const k=DATA.schedule.findIndex(x=>x.id===editingId);if(k>=0)DATA.schedule[k]=item;else DATA.schedule.push(item);}
-  else DATA.schedule.push(item);
+  const old=isEdit?DATA.schedule.find(x=>x.id===editingId):null;
+  const oldImg=(old&&old.image)||'';
+  const file=$('#xImg').files[0],removeImg=$('#xImgDel').checked;
+  item.image=removeImg?'':oldImg;
   resetForm();
-  run(()=>saveData((isEdit?'edit':'add')+' schedule: '+title));
+  $('#xSave').disabled=true;
+  run(async()=>{
+    if(file){const p=await prepImage(file);item.image=await uploadFile(p.blob,p.name);}
+    if(isEdit){const k=DATA.schedule.findIndex(x=>x.id===item.id);if(k>=0)DATA.schedule[k]=item;else DATA.schedule.push(item);}
+    else DATA.schedule.push(item);
+    await saveData((isEdit?'edit':'add')+' schedule: '+title);
+    if(oldImg&&oldImg!==item.image)await deleteUpload(oldImg);
+  }).finally(()=>{$('#xSave').disabled=false;});
 };
 $('#xList').onclick=e=>{
   const ed=e.target.closest('[data-edit]'),del=e.target.closest('[data-del]');
@@ -589,6 +603,9 @@ $('#xList').onclick=e=>{
     $('#xTitle').value=x.title;$('#xDate').value=x.date;$('#xCat').value=x.category||'';
     $('#xTime').value=x.time||'';$('#xEnd').value=x.endTime||'';$('#xLoc').value=x.location||'';
     $('#xDet').value=x.details||'';$('#xLink').value=x.link||'';
+    $('#xImg').value='';$('#xImgDel').checked=false;
+    if(x.image){$('#xImgThumb').style.backgroundImage="url('"+encodeURI(x.image)+"')";$('#xImgCur').hidden=false;}
+    else $('#xImgCur').hidden=true;
     $('#fTitle').textContent='编辑行程';$('#xSave').textContent='保存修改';$('#xCancel').hidden=false;
     $('#fTitle').scrollIntoView({behavior:'smooth'});
   }
@@ -597,7 +614,7 @@ $('#xList').onclick=e=>{
     if(!confirm('删除「'+x.title+'」？'))return;
     DATA.schedule=DATA.schedule.filter(i=>i.id!==x.id);
     if(editingId===x.id)resetForm();
-    run(()=>saveData('delete schedule: '+x.title));
+    run(async()=>{await saveData('delete schedule: '+x.title);await deleteUpload(x.image);});
   }
 };
 
